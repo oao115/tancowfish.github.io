@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>歸屬，或囚籠</title>
+
+<style>
+/* ===== 基本 ===== */
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: "PMingLiU", "MingLiU", serif;
+    overflow-x: hidden;
+}
+
+/* ===== 背景 ===== */
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: #000;
+}
+
+/* ===== 螢火蟲 ===== */
+.particles {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particles span {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #98e2dc;
+    border-radius: 50%;
+    opacity: 0.6;
+}
+
+/* ===== Banner ===== */
+.banner {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== 打字文字 ===== */
+.title, .subtitle {
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid #98e2dc;
+}
+
+.title {
+    font-size: 2.5rem;
+    letter-spacing: 0.3rem;
+}
+
+.subtitle {
+    margin-top: 15px;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+/* 心靈測驗 */
+.quiz-link {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    color: #98e2dc;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+/* ===== 書本區 ===== */
+section {
+    padding: 60px 20px;
+}
+
+.book {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.book img {
+    width: 80%;
+    max-width: 260px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.book img:hover {
+    transform: scale(1.05);
+}
+
+.book h3 {
+    margin-top: 20px;
+}
+
+.book p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* ===== 點擊光暈 ===== */
+.ripple {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, #a3e6e2, transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    animation: ripple 0.6s ease-out;
+}
+
+@keyframes ripple {
+    to {
+        transform: translate(-50%, -50%) scale(8);
+        opacity: 0;
+    }
+}
+
+/* ===== 音樂按鈕 ===== */
+.music-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 12px;
+    color: #c9c9c9;
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+/* ===== 版權 ===== */
+footer {
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.5;
+    padding: 30px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div class="background"></div>
+<div class="particles"></div>
+
+<!-- 音樂 -->
+<audio id="bgm" loop>
+    <source src="001.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ===== 標題 ===== -->
+<div class="banner">
+    <h1 class="title" id="title"></h1>
+    <p class="subtitle" id="subtitle"></p>
+
+    <a href="https://example.com" class="quiz-link">
+        ← 直探你內心的想法?
+    </a>
+</div>
+
+<!-- ===== 書本 ===== -->
+<section>
+    <div class="book">
+        <a href="book1.html" onclick="switchMusic('001.mp3')">
+            <img src="image/00.png">
+        </a>
+        <h3>Vol. I 裂縫</h3>
+        <p>在群體的微笑裡，我找回了自己的聲音。</p>
+    </div>
+</section>
+
+<section>
+    <div class="book">
+        <a href="book2.html" onclick="switchMusic('02.mp3')">
+            <img src="image/100.png">
+        </a>
+        <h3>Vol. II 天堂</h3>
+        <p>以愛之名張開雙臂，將我們擁入無聲的深淵。</p>
+    </div>
+</section>
+
+<section>
+    <div class="book">
+        <a href="book3.html" onclick="switchMusic('33333333.mp3')">
+            <img src="image/200.jpg">
+        </a>
+        <h3>Vol. III 療癒</h3>
+        <p>治癒從來不是救贖，而是更深的腐蝕。</p>
+    </div>
+</section>
+
+<!-- 音樂按鈕 -->
+<div class="music-btn" onclick="toggleMusic()" id="musicBtn">
+    音樂 OFF
+</div>
+
+<!-- 版權 -->
+<footer>
+    © 2026 歸屬，或囚籠．版權所有  All Rights Reserved.
+</footer>
+
+<script>
+
+/* ===== 打字效果（純動畫） ===== */
+const titleText = "歸屬，或囚籠";
+const subtitleText = "當光線開始扭曲，你聽見的是誰的聲音？";
+
+let i = 0;
+function typeTitle() {
+    if (i < titleText.length) {
+        document.getElementById("title").innerHTML += titleText[i];
+        i++;
+        setTimeout(typeTitle, 180);
+    } else {
+        typeSubtitle();
+    }
+}
+
+let j = 0;
+function typeSubtitle() {
+    if (j < subtitleText.length) {
+        document.getElementById("subtitle").innerHTML += subtitleText[j];
+        j++;
+        setTimeout(typeSubtitle, 100);
+    }
+}
+
+typeTitle();
+
+/* ===== 螢火蟲 ===== */
+const container = document.querySelector('.particles');
+
+for (let i = 0; i < 25; i++) {
+    const dot = document.createElement('span');
+    dot.style.left = Math.random() * window.innerWidth + 'px';
+    dot.style.top = Math.random() * window.innerHeight + 'px';
+    container.appendChild(dot);
+
+    move(dot);
+}
+
+function move(el) {
+    let x = parseFloat(el.style.left);
+    let y = parseFloat(el.style.top);
+
+    function animate() {
+        x += (Math.random() - 0.5) * 1.2;
+        y += (Math.random() - 0.5) * 1.2;
+
+        if (x < 0) x = window.innerWidth;
+        if (x > window.innerWidth) x = 0;
+        if (y < 0) y = window.innerHeight;
+        if (y > window.innerHeight) y = 0;
+
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+
+        requestAnimationFrame(animate);
+    }
+
+    animate();
+}
+
+/* ===== 點擊光暈 ===== */
+document.addEventListener("click", function(e) {
+    const ripple = document.createElement("div");
+    ripple.className = "ripple";
+    ripple.style.left = e.clientX + "px";
+    ripple.style.top = e.clientY + "px";
+    document.body.appendChild(ripple);
+
+    setTimeout(() => ripple.remove(), 600);
+});
+
+/* ===== 音樂控制 ===== */
+const bgm = document.getElementById("bgm");
+const btn = document.getElementById("musicBtn");
+
+let playing = localStorage.getItem("musicPlaying") === "true";
+
+if (playing) {
+    bgm.play().catch(()=>{});
+    btn.innerText = "音樂 ON";
+} else {
+    bgm.pause();
+    btn.innerText = "音樂 OFF";
+}
+
+function switchMusic(src) {
+    localStorage.setItem("currentMusic", src);
+
+    if (playing) {
+        bgm.src = src;
+        bgm.play();
+    }
+}
+
+function toggleMusic() {
+    if (!playing) {
+        bgm.play();
+        btn.innerText = "音樂 ON";
+        playing = true;
+        localStorage.setItem("musicPlaying", "true");
+    } else {
+        bgm.pause();
+        btn.innerText = "音樂 OFF";
+        playing = false;
+        localStorage.setItem("musicPlaying", "false");
+    }
+}
+</script>
+
+</body>
+</html>

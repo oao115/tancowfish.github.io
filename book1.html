@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vol. I 裂縫</title>
+
+<style>
+body {
+    margin: 0;
+    background: black;
+    overflow: hidden;
+}
+
+/* ===== iPhone 偽橫屏 ===== */
+.wrapper {
+    position: fixed;
+    width: 100vh;
+    height: 100vw;
+    top: 0;
+    left: 0;
+    transform: rotate(90deg) translateY(-100%);
+    transform-origin: top left;
+}
+
+/* 主畫面 */
+.viewer {
+    width: 100vh;
+    height: 100vw;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 黑邊 */
+.top-bar {
+    height: 4vh;
+}
+
+.bottom-bar {
+    height: 6vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 返回 */
+.back-btn {
+    color: #8df7f1;
+    font-size: 12px;
+    text-decoration: none;
+    opacity: 0.8;
+}
+
+/* 圖片區 */
+.stage {
+    flex: 1;
+    position: relative;
+}
+
+/* 圖片 */
+.page {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.page.active {
+    opacity: 1;
+}
+
+/* 點擊區 */
+.nav {
+    position: absolute;
+    top: 0;
+    width: 25%;
+    height: 100%;
+    z-index: 10;
+    opacity: 0;
+}
+
+.nav.left { left: 0; }
+.nav.right { right: 0; }
+
+/* ===== 🔥 提示遮罩 ===== */
+.overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5); /* 50%黑 */
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    z-index: 20;
+    font-size: 16px;
+    padding: 20px;
+}
+
+/* Android / 桌機正常 */
+@media screen and (orientation: landscape) {
+    .wrapper {
+        transform: none;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .viewer {
+        width: 100vw;
+        height: 100vh;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgm" loop></audio>
+
+<div class="wrapper">
+
+    <div class="viewer">
+
+        <div class="top-bar"></div>
+
+        <div class="stage">
+
+            <!-- 🔥 提示（壓在第一張） -->
+            <div class="overlay" id="overlay" onclick="hideOverlay()">
+                建議橫向閱讀以獲得最佳體驗<br><br>（ 點擊繼續 ）
+            </div>
+
+            <!-- 圖片 -->
+            <img src="image/01gif.gif" class="page active">
+            <img src="image/001.png" class="page">
+            <img src="image/2.png" class="page">
+            <img src="image/6.png" class="page">
+            <img src="image/8.png" class="page">
+            <img src="image/10.png" class="page">
+            <img src="image/12.png" class="page">
+            <img src="image/14.png" class="page">
+            <img src="image/16.png" class="page">
+            <img src="image/18.png" class="page">
+            <img src="image/20.png" class="page">
+            <img src="image/22.png" class="page">
+            <img src="image/23.png" class="page">
+            <img src="image/24.png" class="page">
+            <img src="image/30.png" class="page">
+            <img src="image/31.png" class="page">
+            <img src="image/32.png" class="page">
+            <img src="image/34.png" class="page">
+            <img src="image/36.png" class="page">
+            <img src="image/39.png" class="page">
+            <img src="image/41.png" class="page">
+            <img src="image/42.png" class="page">
+            <img src="image/44.png" class="page">
+            <img src="image/46.png" class="page">
+            <img src="image/49.png" class="page">
+            <img src="image/55.png" class="page">
+            <img src="image/56.png" class="page">
+            <img src="image/57.png" class="page">
+
+
+            <!-- 點擊區 -->
+            <div class="nav left" onclick="prevPage()"></div>
+            <div class="nav right" onclick="nextPage()"></div>
+
+        </div>
+
+        <div class="bottom-bar">
+            <a href="index.html" class="back-btn">← 返回首頁</a>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+/* 音樂播放 */
+const bgm = document.getElementById("bgm");
+
+const playing = localStorage.getItem("musicPlaying") === "true";
+const music = localStorage.getItem("currentMusic") || "001.mp3";
+
+bgm.src = music;
+
+if (playing) {
+    bgm.play().catch(()=>{});
+}
+
+let current = 0;
+const pages = document.querySelectorAll(".page");
+
+/* 顯示頁 */
+function showPage(index) {
+    pages.forEach(p => p.classList.remove("active"));
+    pages[index].classList.add("active");
+}
+
+/* 翻頁 */
+function nextPage() {
+    if (current < pages.length - 1) {
+        current++;
+        showPage(current);
+    }
+}
+
+function prevPage() {
+    if (current > 0) {
+        current--;
+        showPage(current);
+    }
+}
+
+/* 🔥 關閉提示 */
+function hideOverlay() {
+    document.getElementById("overlay").style.display = "none";
+}
+
+/* 滑動 */
+let startX = 0;
+
+document.addEventListener("touchstart", e => {
+    startX = e.touches[0].clientX;
+});
+
+document.addEventListener("touchend", e => {
+    let endX = e.changedTouches[0].clientX;
+
+    if (startX - endX > 50) nextPage();
+    if (endX - startX > 50) prevPage();
+});
+</script>
+
+</body>
+</html>
